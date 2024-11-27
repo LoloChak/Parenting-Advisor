@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>育儿顾问</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+        }
+        .input-section {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .response-section {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>育儿顾问</h1>
+    
+    <div class="input-section">
+        <label for="question">请描述您遇到的育儿问题：</label>
+        <textarea id="question" placeholder="例如：我的孩子总是反复问同一个问题..."></textarea>
+        <button onclick="generateAdvice()">获取建议</button>
+    </div>
+
+    <div id="response" class="response-section">
+        <div class="section">
+            <div class="section-title">【初步理解】</div>
+            <div id="understanding"></div>
+        </div>
+        <div class="section">
+            <div class="section-title">【哲学思考】</div>
+            <div id="philosophy"></div>
+        </div>
+        <div class="section">
+            <div class="section-title">【心理洞察】</div>
+            <div id="psychology"></div>
+        </div>
+        <div class="section">
+            <div class="section-title">【实践方案】</div>
+            <div id="practice"></div>
+        </div>
+    </div>
+
+    <script>
+        function generateAdvice() {
+            const question = document.getElementById('question').value;
+            if (!question.trim()) {
+                alert('请输入您的问题');
+                return;
+            }
+
+            // 模拟回应生成
+            const response = {
+                understanding: `我理解您提到的问题是：${question}\n这确实是许多家长会遇到的困扰。`,
+                philosophy: '从费鲁奇的视角来看，孩子的这种行为体现了他们对世界的好奇和探索精神。这是认知发展的重要组成部分，也是建立世界观的关键阶段。',
+                psychology: '从肯尼迪的观点来看，这种行为背后可能反映了孩子对安全感和认知确认的需求。重复的问题可能是他们寻求与父母建立连接的一种方式。',
+                practice: `基于您的具体情况，我建议：
+                1. 保持耐心，认真倾听每一次提问
+                2. 用适合孩子年龄的方式给出解释
+                3. 引导孩子通过观察和体验来寻找答案
+                4. 在回答时加入互动元素，增强学习趣味性`
+            };
+
+            // 显示回应
+            document.getElementById('understanding').textContent = response.understanding;
+            document.getElementById('philosophy').textContent = response.philosophy;
+            document.getElementById('psychology').textContent = response.psychology;
+            document.getElementById('practice').textContent = response.practice;
+            document.getElementById('response').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
