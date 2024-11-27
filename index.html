@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>育儿顾问</title>
+    <title>育儿顾问 - 智能分析版</title>
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -11,43 +11,80 @@
             margin: 20px auto;
             padding: 0 20px;
             line-height: 1.6;
+            color: #333;
         }
         .input-section {
             margin-bottom: 20px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         textarea {
             width: 100%;
             height: 150px;
             margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
+            padding: 15px;
+            border: 1px solid #ddd;
             border-radius: 4px;
+            font-size: 16px;
+            line-height: 1.5;
         }
         button {
-            background-color: #4CAF50;
+            background-color: #2E7D32;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #1B5E20;
         }
         .response-section {
             display: none;
             margin-top: 20px;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            padding: 15px;
+            border-left: 4px solid #2E7D32;
+            background: #f5f5f5;
         }
         .section-title {
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
+            margin-bottom: 15px;
+            color: #1B5E20;
+            font-size: 1.2em;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        .example-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f7f0;
+            border-radius: 4px;
+        }
+        .example-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -56,8 +93,19 @@
     
     <div class="input-section">
         <label for="question">请描述您遇到的育儿问题：</label>
-        <textarea id="question" placeholder="例如：我的孩子总是反复问同一个问题..."></textarea>
-        <button onclick="generateAdvice()">获取建议</button>
+        <textarea id="question" placeholder="例如：我3岁7个月的女儿总是反复问同一个问题，比如'为什么天是蓝的'，问了很多次，该怎么办？"></textarea>
+        <button onclick="generateAdvice()">获取专业建议</button>
+    </div>
+
+    <div class="example-section">
+        <p>常见问题示例：</p>
+        <button class="example-button" onclick="useExample(1)">反复提问</button>
+        <button class="example-button" onclick="useExample(2)">不愿分享玩具</button>
+        <button class="example-button" onclick="useExample(3)">晚上不愿睡觉</button>
+    </div>
+
+    <div id="loading" class="loading">
+        正在生成专业分析和建议...
     </div>
 
     <div id="response" class="response-section">
@@ -80,6 +128,16 @@
     </div>
 
     <script>
+        const examples = {
+            1: "我3岁7个月的女儿总是反复问同一个问题，比如'为什么天是蓝的'，问了很多次，该怎么办？",
+            2: "我家孩子4岁，在幼儿园里总是不愿意和其他小朋友分享玩具，老师经常反馈这个问题，我该如何引导她学会分享？",
+            3: "我家3岁的孩子到了晚上就是不愿意睡觉，总是找各种理由要求再玩一会，每天都拖到很晚，该怎么建立良好的睡眠习惯？"
+        };
+
+        function useExample(num) {
+            document.getElementById('question').value = examples[num];
+        }
+
         function generateAdvice() {
             const question = document.getElementById('question').value;
             if (!question.trim()) {
@@ -87,24 +145,81 @@
                 return;
             }
 
-            // 模拟回应生成
-            const response = {
-                understanding: `我理解您提到的问题是：${question}\n这确实是许多家长会遇到的困扰。`,
-                philosophy: '从费鲁奇的视角来看，孩子的这种行为体现了他们对世界的好奇和探索精神。这是认知发展的重要组成部分，也是建立世界观的关键阶段。',
-                psychology: '从肯尼迪的观点来看，这种行为背后可能反映了孩子对安全感和认知确认的需求。重复的问题可能是他们寻求与父母建立连接的一种方式。',
-                practice: `基于您的具体情况，我建议：
-                1. 保持耐心，认真倾听每一次提问
-                2. 用适合孩子年龄的方式给出解释
-                3. 引导孩子通过观察和体验来寻找答案
-                4. 在回答时加入互动元素，增强学习趣味性`
-            };
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('response').style.display = 'none';
 
-            // 显示回应
+            // 模拟API调用延迟
+            setTimeout(() => {
+                const response = generateDetailedResponse(question);
+                displayResponse(response);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('response').style.display = 'block';
+            }, 1500);
+        }
+
+        function generateDetailedResponse(question) {
+            // 基于问题内容生成更有针对性的回应
+            let response = {
+                understanding: `我理解您提出的问题是关于${extractTopic(question)}。这确实是在育儿过程中常见的困扰，让我们一起来分析这个情况。`,
+                philosophy: generatePhilosophyResponse(question),
+                psychology: generatePsychologyResponse(question),
+                practice: generatePracticalAdvice(question)
+            };
+            return response;
+        }
+
+        function extractTopic(question) {
+            // 提取问题主题的简单逻辑
+            if (question.includes('反复问')) return '孩子反复提问的行为';
+            if (question.includes('分享')) return '孩子的分享行为';
+            if (question.includes('睡觉')) return '孩子的睡眠问题';
+            return '您描述的育儿情况';
+        }
+
+        function generatePhilosophyResponse(question) {
+            if (question.includes('反复问')) {
+                return '从费鲁奇的教育哲学角度来看，孩子反复提问实际上是在进行深层的认知探索。这种行为反映了孩子旺盛的求知欲和对世界的好奇心，是智力发展的重要标志。反复提问不仅帮助孩子加深理解，也是他们建立世界观的重要方式。这个阶段的提问行为，实际上是孩子在主动参与知识建构的过程。';
+            }
+            if (question.includes('分享')) {
+                return '从费鲁奇的视角看，分享行为涉及到儿童对物品所有权的理解和社会价值观的形成。这个阶段的"不愿分享"并非简单的自私，而是孩子在建立自我认同和理解社会关系的必经阶段。这个过程帮助孩子形成对个人财产、社会合作等概念的基本认知。';
+            }
+            if (question.includes('睡觉')) {
+                return '从费鲁奇的观点来看，睡眠议题不仅仅是行为习惯的问题，更深层次地反映了孩子对时间、规律和自主权的认知与探索。不愿入睡可能是孩子尝试掌控自己生活的一种表现，也体现了他们对白天活动的不舍与对新鲜体验的渴望。';
+            }
+            return '从费鲁奇的教育哲学视角来看，孩子的这种行为反映了他们正在经历重要的认知发展阶段。这个时期的行为表现往往与其对世界的理解方式和自我认知的建立密切相关。';
+        }
+
+        function generatePsychologyResponse(question) {
+            if (question.includes('反复问')) {
+                return '从肯尼迪的儿童心理学角度分析，反复提问可能源于以下几个心理需求：\n1. 寻求安全感和确认感\n2. 建立与父母的情感连接\n3. 通过重复来强化理解\n4. 获得持续的关注和回应\n这些需求都是儿童心理发展过程中的重要组成部分。';
+            }
+            if (question.includes('分享')) {
+                return '从肯尼迪的心理分析角度看，这个年龄段的孩子正处于自我中心到社会化的过渡期。不愿分享可能反映出：\n1. 对物品的依恋感\n2. 对失去控制的焦虑\n3. 尚未完全发展的共情能力\n4. 对社交互动规则的学习过程';
+            }
+            if (question.includes('睡觉')) {
+                return '从肯尼迪的心理学视角分析，孩子的睡眠抵抗可能与以下心理因素有关：\n1. 分离焦虑\n2. 害怕错过有趣的事情(FOMO)\n3. 对黑暗或独处的恐惧\n4. 寻求父母额外的关注和陪伴时间';
+            }
+            return '从肯尼迪的儿童心理学角度来看，这种行为表现背后往往隐含着孩子特定的情感需求和心理发展特征。理解这些深层需求对于有效引导至关重要。';
+        }
+
+        function generatePracticalAdvice(question) {
+            if (question.includes('反复问')) {
+                return '基于以上分析，建议采取以下方案：\n\n1. 耐心倾听与回应\n- 每次回答时都表现出认真的态度\n- 可以稍微变换回答方式，增加新的细节\n- 鼓励孩子自己思考和探索\n\n2. 互动式学习\n- 将问题转化为共同探索的机会\n- 通过实验或观察来寻找答案\n- 使用图画书或视频辅助解释\n\n3. 建立积极的提问模式\n- 引导孩子记录自己的问题\n- 设定特定的"问答时间"\n- 鼓励孩子尝试先自己思考答案';
+            }
+            if (question.includes('分享')) {
+                return '根据分析，推荐以下实践方案：\n\n1. 循序渐进的分享训练\n- 从短时间分享开始\n- 先与最亲近的人分享\n- 及时肯定分享行为\n\n2. 角色扮演游戏\n- 模拟分享场景\n- 让孩子体验被分享的快乐\n- 讲述关于分享的故事\n\n3. 建立明确的规则\n- 设定基本的分享原则\n- 尊重孩子的个人物品\n- 给予选择的权利';
+            }
+            if (question.includes('睡觉')) {
+                return '基于以上分析，建议如下：\n\n1. 建立规律的睡前程序\n- 固定的睡前活动顺序\n- 逐步降低活动强度\n- 创造温馨的睡眠环境\n\n2. 情感需求的满足\n- 增加白天的优质陪伴\n- 睡前进行温和的互动\n- 适当的身体接触\n\n3. 循序渐进的调整\n- 每晚提前5-10分钟\n- 坚持执行不轻易妥协\n- 白天增加运动量';
+            }
+            return '基于以上分析，建议：\n\n1. 保持耐心和一致性\n2. 理解和满足孩子的基本需求\n3. 采用积极引导的方式\n4. 给予适当的自主权\n5. 创造良好的互动机会';
+        }
+
+        function displayResponse(response) {
             document.getElementById('understanding').textContent = response.understanding;
             document.getElementById('philosophy').textContent = response.philosophy;
             document.getElementById('psychology').textContent = response.psychology;
             document.getElementById('practice').textContent = response.practice;
-            document.getElementById('response').style.display = 'block';
         }
     </script>
 </body>
